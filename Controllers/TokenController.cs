@@ -13,10 +13,12 @@ namespace JwtAuthDemo.Controllers
 {
     [Authorize]
     [ApiController]
+    [CustomAuthorizationorization]
     public class TokenController : ControllerBase
     {
         private readonly JwtHelpers jwt;
 
+      
         public TokenController(JwtHelpers jwt)
         {
             this.jwt = jwt;

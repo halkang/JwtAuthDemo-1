@@ -53,6 +53,14 @@ namespace JwtAuthDemo
                 });
 
             services.AddControllers();
+
+            services.AddMvc(config =>
+            {
+                config.Filters.Add(new CustomAuthorizationorization());
+
+            });
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
