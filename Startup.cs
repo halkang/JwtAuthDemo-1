@@ -31,26 +31,38 @@ namespace JwtAuthDemo
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<JwtHelpers>();
+            //JWT
+            //services
+            //    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //    .AddJwtBearer(options =>
+            //    {
+            //        options.IncludeErrorDetails = true; // WWW-Authenticate 會顯示詳細錯誤原因
 
-            services
-                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.IncludeErrorDetails = true; // WWW-Authenticate 會顯示詳細錯誤原因
+            //        options.TokenValidationParameters = new TokenValidationParameters
+            //        {
+            //            NameClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier",
+            //            RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+            //            ValidateIssuer = true,
+            //            ValidIssuer = Configuration.GetValue<string>("JwtSettings:Issuer"),
+            //            ValidateAudience = false,
+            //            //ValidAudience = Configuration.GetValue<string>("JwtSettings:Issuer"),
+            //            ValidateLifetime = true,
+            //            ValidateIssuerSigningKey = false, // 如果 JWT 包含 key 才需要驗證，一般都只有簽章而已
+            //            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.GetValue<string>("JwtSettings:SignKey")))
+            //        };
+            //    });
 
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        NameClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier",
-                        RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
-                        ValidateIssuer = true,
-                        ValidIssuer = Configuration.GetValue<string>("JwtSettings:Issuer"),
-                        ValidateAudience = false,
-                        //ValidAudience = Configuration.GetValue<string>("JwtSettings:Issuer"),
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = false, // 如果 JWT 包含 key 才需要驗證，一般都只有簽章而已
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.GetValue<string>("JwtSettings:SignKey")))
-                    };
-                });
+            //自訂Token
+            services.AddAuthentication(MyCustomTokenAuthOptions.DefaultScemeName)
+                .AddScheme<MyCustomTokenAuthOptions, MyCustomTokenAuthHandler>(
+                MyCustomTokenAuthOptions.DefaultScemeName,
+                opts =>
+                   {
+                       // you can change the token header name here by :
+                       //     opts.TokenHeaderName = "X-Custom-Token-Header";
+                       opts.CusTooken = "ThisIsCustomerTokenCheck";
+                    }
+             );      
 
             services.AddControllers();
 
@@ -83,8 +95,9 @@ namespace JwtAuthDemo
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints => {
-               endpoints.MapControllers();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
             });
         }
     }
